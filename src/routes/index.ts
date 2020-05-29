@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
+import { Router } from 'express';
 
-function helloWorld(request: Request, response: Response) {
-  return response.json({ message: 'Hello world' });
-}
+const routes = Router();
 
-export default helloWorld;
+routes.get('/', (request, response) => response.json({ message: 'Hello GerenciArqui' }));
+
+export default routes;
