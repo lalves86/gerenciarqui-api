@@ -2,6 +2,8 @@ import { Router } from 'express';
 
 const routes = Router();
 
-routes.get('/', (request, response) => response.json({ message: 'Hello GerenciArqui' }));
+routes.get('/', (request, response) =>
+  response.json({ message: 'Hello GerenciArqui' }),
+);
 
 export default routes;
