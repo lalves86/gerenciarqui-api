@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
+import projectsRouter from './projects.routes';
+
 const routes = Router();
 
-routes.get('/', (request, response) =>
-  response.json({ message: 'Hello GerenciArqui' }),
-);
+routes.use('/projects', projectsRouter);
 
 export default routes;

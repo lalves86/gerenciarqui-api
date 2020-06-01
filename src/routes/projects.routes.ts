@@ -1,15 +1,10 @@
 import { Router } from 'express';
-import { uuid } from 'uuidv4';
+
+import Project from '../models/Project';
 
 const routes = Router();
 
-interface IProject {
-  id: string;
-  name: string;
-  client: string;
-}
-
-const projects: IProject[] = [];
+const projects: Project[] = [];
 
 routes.get('/', (request, response) => {
   return response.json(projects);
@@ -25,11 +20,7 @@ routes.post('/', (request, response) => {
       .status(400)
       .json({ message: `Project ${name} already exists` });
 
-  const project = {
-    id: uuid(),
-    name,
-    client,
-  };
+  const project = new Project(name, client);
 
   projects.push(project);
 
