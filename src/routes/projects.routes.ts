@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import ProjectsRepository from '../repositories/ProjectsRepository';
+import CreateProjectService from '../services/CreateProjectService';
 
 const routes = Router();
 
@@ -13,18 +14,17 @@ routes.get('/', (request, response) => {
 });
 
 routes.post('/', (request, response) => {
-  const { name, client } = request.body;
+  try {
+    const { name, client } = request.body;
 
-  const projectExists = projectsRepository.findByName(name);
+    const createProject = new CreateProjectService(projectsRepository);
 
-  if (projectExists)
-    return response
-      .status(400)
-      .json({ message: `Project ${name} already exists` });
+    const project = createProject.execute({ name, client });
 
-  const project = projectsRepository.create({ name, client });
-
-  return response.json(project);
+    return response.json(project);
+  } catch (error) {
+    return response.status(400).json({ error: error.message });
+  }
 });
 
 export default routes;
