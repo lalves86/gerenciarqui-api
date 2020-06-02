@@ -22,7 +22,7 @@ routes.post('/', (request, response) => {
       .status(400)
       .json({ message: `Project ${name} already exists` });
 
-  const project = projectsRepository.create(name, client);
+  const project = projectsRepository.create({ name, client });
 
   return response.json(project);
 });

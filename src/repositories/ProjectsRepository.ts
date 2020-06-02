@@ -1,5 +1,10 @@
 import Project from '../models/Project';
 
+interface CreateProjectDTO {
+  name: string;
+  client: string;
+}
+
 class ProjectsRepository {
   private projects: Project[];
 
@@ -19,8 +24,8 @@ class ProjectsRepository {
     return findProject || null;
   }
 
-  public create(name: string, client: string): Project {
-    const project = new Project(name, client);
+  public create({ name, client }: CreateProjectDTO): Project {
+    const project = new Project({ name, client });
 
     this.projects.push(project);
 
