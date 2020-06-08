@@ -1,3 +1,5 @@
+import { getCustomRepository } from 'typeorm';
+
 import Project from '../models/Project';
 import ProjectsRepository from '../repositories/ProjectsRepository';
 
@@ -7,18 +9,16 @@ interface Request {
 }
 
 class CreateProjectService {
-  private projectsRepository: ProjectsRepository;
+  public async execute({ name, client }: Request): Promise<Project> {
+    const projectsRepository = getCustomRepository(ProjectsRepository);
 
-  constructor(projectsRepository: ProjectsRepository) {
-    this.projectsRepository = projectsRepository;
-  }
-
-  public execute({ name, client }: Request): Project {
-    const projectExists = this.projectsRepository.findByName(name);
+    const projectExists = await projectsRepository.findByName(name);
 
     if (projectExists) throw new Error(`Project ${name} already exists`);
 
-    const project = this.projectsRepository.create({ name, client });
+    const project = projectsRepository.create({ name, client });
+
+    await projectsRepository.save(project);
 
     return project;
   }

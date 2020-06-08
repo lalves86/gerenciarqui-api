@@ -1,35 +1,14 @@
+import { EntityRepository, Repository } from 'typeorm';
 import Project from '../models/Project';
 
-interface CreateProjectDTO {
-  name: string;
-  client: string;
-}
-
-class ProjectsRepository {
-  private projects: Project[];
-
-  constructor() {
-    this.projects = [];
-  }
-
-  public findAllProjects(): Project[] {
-    const { projects } = this;
-
-    return projects;
-  }
-
-  public findByName(name: string): Project | null {
-    const findProject = this.projects.find((project) => project.name === name);
+@EntityRepository(Project)
+class ProjectsRepository extends Repository<Project> {
+  public async findByName(name: string): Promise<Project | null> {
+    const findProject = await this.findOne({
+      where: { name },
+    });
 
     return findProject || null;
-  }
-
-  public create({ name, client }: CreateProjectDTO): Project {
-    const project = new Project({ name, client });
-
-    this.projects.push(project);
-
-    return project;
   }
 }
 
