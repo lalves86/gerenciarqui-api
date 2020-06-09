@@ -8,18 +8,13 @@ export default class CreateProjects1591618477773 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'varchar',
+            type: 'uuid',
             isPrimary: true,
             generationStrategy: 'uuid',
             default: 'uuid_generate_v4()',
           },
           {
             name: 'name',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'client',
             type: 'varchar',
             isNullable: false,
           },

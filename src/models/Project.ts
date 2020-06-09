@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
   Entity,
   Column,
@@ -13,9 +14,6 @@ class Project {
 
   @Column()
   name: string;
-
-  @Column()
-  client: string;
 
   @CreateDateColumn()
   created_at: Date;
