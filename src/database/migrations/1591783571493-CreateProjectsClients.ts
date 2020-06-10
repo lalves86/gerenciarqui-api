@@ -10,7 +10,7 @@ export default class CreateProjectsClients1591783571493
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'projects_clients',
+        name: 'clients_project_projects',
         columns: [
           {
             name: 'id',
@@ -20,12 +20,12 @@ export default class CreateProjectsClients1591783571493
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'project_id',
+            name: 'projectsId',
             type: 'uuid',
             isNullable: true,
           },
           {
-            name: 'client_id',
+            name: 'clientsId',
             type: 'uuid',
             isNullable: true,
           },
@@ -44,10 +44,10 @@ export default class CreateProjectsClients1591783571493
     );
 
     await queryRunner.createForeignKey(
-      'projects_clients',
+      'clients_project_projects',
       new TableForeignKey({
         name: 'ProjectClient',
-        columnNames: ['project_id'],
+        columnNames: ['projectsId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'projects',
         onDelete: 'SET NULL',
@@ -56,10 +56,10 @@ export default class CreateProjectsClients1591783571493
     );
 
     await queryRunner.createForeignKey(
-      'projects_clients',
+      'clients_project_projects',
       new TableForeignKey({
         name: 'ClientProject',
-        columnNames: ['client_id'],
+        columnNames: ['clientsId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'clients',
         onDelete: 'SET NULL',
@@ -69,10 +69,16 @@ export default class CreateProjectsClients1591783571493
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('clients', 'ClientProject');
+    await queryRunner.dropForeignKey(
+      'clients_project_projects',
+      'ClientProject',
+    );
 
-    await queryRunner.dropForeignKey('projects', 'ProjectClient');
+    await queryRunner.dropForeignKey(
+      'clients_project_projects',
+      'ProjectClient',
+    );
 
-    await queryRunner.dropTable('projects_clients');
+    await queryRunner.dropTable('clients_project_projects');
   }
 }
