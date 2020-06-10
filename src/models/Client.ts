@@ -5,8 +5,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 import Project from './Project';
@@ -37,12 +37,9 @@ class Client {
   @Column()
   avatar: string;
 
-  @Column()
-  project_id: string;
-
-  @ManyToOne(() => Project)
-  @JoinColumn({ name: 'project_id' })
-  project: Project;
+  @ManyToMany(() => Project)
+  @JoinTable()
+  project: Project[];
 
   @CreateDateColumn()
   created_at: Date;

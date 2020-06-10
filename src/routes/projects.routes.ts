@@ -4,9 +4,9 @@ import { getCustomRepository } from 'typeorm';
 import ProjectsRepository from '../repositories/ProjectsRepository';
 import CreateProjectService from '../services/CreateProjectService';
 
-const routes = Router();
+const projectsRouter = Router();
 
-routes.get('/', async (request, response) => {
+projectsRouter.get('/', async (request, response) => {
   const projectsRepository = getCustomRepository(ProjectsRepository);
 
   const projects = await projectsRepository.find();
@@ -14,7 +14,7 @@ routes.get('/', async (request, response) => {
   return response.json(projects);
 });
 
-routes.post('/', async (request, response) => {
+projectsRouter.post('/', async (request, response) => {
   try {
     const { name, client } = request.body;
 
@@ -28,4 +28,4 @@ routes.post('/', async (request, response) => {
   }
 });
 
-export default routes;
+export default projectsRouter;
