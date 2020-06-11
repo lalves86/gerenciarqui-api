@@ -1,4 +1,5 @@
 import { getRepository } from 'typeorm';
+import { hash } from 'bcryptjs';
 
 import Client from '../models/Client';
 
@@ -28,12 +29,14 @@ class CreateClientService {
 
     if (checkClientExists) throw new Error('E-mail address already used.');
 
+    const hashedPassword = await hash(password, 8);
+
     const client = clientsRepository.create({
       name,
       email,
       phone,
       address,
-      password,
+      password: hashedPassword,
       cpf,
     });
 
