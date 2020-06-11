@@ -3,8 +3,11 @@ import { getCustomRepository } from 'typeorm';
 
 import ProjectsRepository from '../repositories/ProjectsRepository';
 import CreateProjectService from '../services/CreateProjectService';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const projectsRouter = Router();
+
+projectsRouter.use(ensureAuthenticated);
 
 projectsRouter.get('/', async (request, response) => {
   const projectsRepository = getCustomRepository(ProjectsRepository);
