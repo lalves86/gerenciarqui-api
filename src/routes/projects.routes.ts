@@ -18,17 +18,13 @@ projectsRouter.get('/', async (request, response) => {
 });
 
 projectsRouter.post('/', async (request, response) => {
-  try {
-    const { name, client } = request.body;
+  const { name, client } = request.body;
 
-    const createProject = new CreateProjectService();
+  const createProject = new CreateProjectService();
 
-    const project = await createProject.execute({ name, client });
+  const project = await createProject.execute({ name, client });
 
-    return response.json(project);
-  } catch (error) {
-    return response.status(400).json({ error: error.message });
-  }
+  return response.json(project);
 });
 
 export default projectsRouter;
