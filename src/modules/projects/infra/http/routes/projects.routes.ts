@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
 
-import ProjectsRepository from '../repositories/ProjectsRepository';
-import CreateProjectService from '../services/CreateProjectService';
-import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+import ProjectsRepository from '@modules/projects/repositories/ProjectsRepository';
+import CreateProjectService from '@modules/projects/services/CreateProjectService';
+import ensureAuthenticated from '@modules/clients/infra/middlewares/ensureAuthenticated';
 
 const projectsRouter = Router();
 

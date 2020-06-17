@@ -2,12 +2,13 @@ import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import multer from 'multer';
 
-import CreateClientService from '../services/CreateClientService';
-import UpdateClientService from '../services/UpdateClientService';
-import Client from '../models/Client';
-import ensureAuthenticated from '../middlewares/ensureAuthenticated';
-import uploadConfig from '../config/upload';
-import UpdateClientAvatarService from '../services/UpdateClientAvatarService';
+import uploadConfig from '@config/upload';
+import Client from '@modules/clients/infra/typeorm/entities/Client';
+
+import CreateClientService from '@modules/clients/services/CreateClientService';
+import UpdateClientService from '@modules/clients/services/UpdateClientService';
+import ensureAuthenticated from '@modules/clients/infra/middlewares/ensureAuthenticated';
+import UpdateClientAvatarService from '@modules/clients/services/UpdateClientAvatarService';
 
 const clientsRouter = Router();
 const upload = multer(uploadConfig);

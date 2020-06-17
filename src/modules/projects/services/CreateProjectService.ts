@@ -1,8 +1,8 @@
 import { getCustomRepository } from 'typeorm';
 
-import Project from '../models/Project';
-import ProjectsRepository from '../repositories/ProjectsRepository';
-import AppError from '../errors/AppError';
+import Project from '@modules/projects/infra/typeorm/entities/Project';
+import ProjectsRepository from '@modules/projects/repositories/ProjectsRepository';
+import AppError from '@shared/errors/AppError';
 
 interface Request {
   name: string;

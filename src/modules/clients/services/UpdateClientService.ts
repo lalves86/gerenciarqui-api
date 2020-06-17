@@ -1,8 +1,8 @@
 import { getRepository } from 'typeorm';
 
-import Client from '../models/Client';
-import Project from '../models/Project';
-import AppError from '../errors/AppError';
+import Client from '@modules/clients/infra/typeorm/entities/Client';
+import Project from '@modules/projects/infra/typeorm/entities/Project';
+import AppError from '@shared/errors/AppError';
 
 interface Request {
   projectId: string;

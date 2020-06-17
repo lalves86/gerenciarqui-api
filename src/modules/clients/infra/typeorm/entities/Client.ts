@@ -9,7 +9,7 @@ import {
   JoinTable,
 } from 'typeorm';
 
-import Project from './Project';
+import Project from '@modules/projects/infra/typeorm/entities/Project';
 
 @Entity('clients')
 class Client {

@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import Project from '../models/Project';
+import Project from '@modules/projects/infra/typeorm/entities/Project';
 
 @EntityRepository(Project)
 class ProjectsRepository extends Repository<Project> {
