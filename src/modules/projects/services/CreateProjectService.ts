@@ -1,25 +1,20 @@
-import { getCustomRepository } from 'typeorm';
-
 import Project from '@modules/projects/infra/typeorm/entities/Project';
-import ProjectsRepository from '@modules/projects/repositories/ProjectsRepository';
 import AppError from '@shared/errors/AppError';
+import IProjectsRepository from '../repositories/IProjectsRepository';
 
-interface Request {
+interface IRequest {
   name: string;
-  client: string;
 }
 
 class CreateProjectService {
-  public async execute({ name }: Request): Promise<Project> {
-    const projectsRepository = getCustomRepository(ProjectsRepository);
+  constructor(private projectsRepository: IProjectsRepository) {}
 
-    const projectExists = await projectsRepository.findByName(name);
+  public async execute({ name }: IRequest): Promise<Project> {
+    const projectExists = await this.projectsRepository.findByName(name);
 
     if (projectExists) throw new AppError(`Project ${name} already exists`);
 
-    const project = projectsRepository.create({ name });
-
-    await projectsRepository.save(project);
+    const project = await this.projectsRepository.create({ name });
 
     return project;
   }

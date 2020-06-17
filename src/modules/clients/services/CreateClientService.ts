@@ -1,10 +1,10 @@
-import { getRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
 
 import AppError from '@shared/errors/AppError';
 import Client from '@modules/clients/infra/typeorm/entities/Client';
+import IClientsRepository from '../repositories/IClientsRepository';
 
-interface Request {
+interface IRequest {
   name: string;
   email: string;
   phone: string;
@@ -14,6 +14,8 @@ interface Request {
 }
 
 class CreateClientService {
+  constructor(private clientsRepository: IClientsRepository) {}
+
   public async execute({
     name,
     email,
@@ -21,18 +23,16 @@ class CreateClientService {
     address,
     password,
     cpf,
-  }: Request): Promise<Client> {
-    const clientsRepository = getRepository(Client);
-
-    const checkClientExists = await clientsRepository.findOne({
-      where: { email },
-    });
+  }: IRequest): Promise<Client> {
+    const checkClientExists = await this.clientsRepository.findByClientEmail(
+      email,
+    );
 
     if (checkClientExists) throw new AppError('E-mail address already used.');
 
     const hashedPassword = await hash(password, 8);
 
-    const client = clientsRepository.create({
+    const client = await this.clientsRepository.create({
       name,
       email,
       phone,
@@ -40,8 +40,6 @@ class CreateClientService {
       password: hashedPassword,
       cpf,
     });
-
-    await clientsRepository.save(client);
 
     return client;
   }

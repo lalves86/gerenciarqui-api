@@ -1,32 +1,35 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
 import multer from 'multer';
 
 import uploadConfig from '@config/upload';
-import Client from '@modules/clients/infra/typeorm/entities/Client';
+
+import ensureAuthenticated from '@modules/clients/infra/middlewares/ensureAuthenticated';
 
 import CreateClientService from '@modules/clients/services/CreateClientService';
 import UpdateClientService from '@modules/clients/services/UpdateClientService';
-import ensureAuthenticated from '@modules/clients/infra/middlewares/ensureAuthenticated';
 import UpdateClientAvatarService from '@modules/clients/services/UpdateClientAvatarService';
+import ProjectsRepository from '@modules/projects/infra/typeorm/repositories/ProjectsRepository';
+import ClientsRepository from '../../typeorm/repositories/ClientsRepository';
 
 const clientsRouter = Router();
 const upload = multer(uploadConfig);
 
-clientsRouter.get('/', ensureAuthenticated, async (request, response) => {
-  const clientsRepository = getRepository(Client);
+// clientsRouter.get('/', ensureAuthenticated, async (request, response) => {
+//   const clientsRepository = getRepository(Client);
 
-  const clients = await clientsRepository.find({
-    relations: ['project'],
-  });
+//   const clients = await clientsRepository.find({
+//     relations: ['project'],
+//   });
 
-  return response.json(clients);
-});
+//   return response.json(clients);
+// });
 
 clientsRouter.post('/', async (request, response) => {
   const { name, email, phone, address, password, cpf } = request.body;
 
-  const createClient = new CreateClientService();
+  const clientsRepository = new ClientsRepository();
+
+  const createClient = new CreateClientService(clientsRepository);
 
   const client = await createClient.execute({
     name,
@@ -47,7 +50,13 @@ clientsRouter.put(
     const { projectId } = request.params;
     const { email } = request.body;
 
-    const updateClient = new UpdateClientService();
+    const clientsRepository = new ClientsRepository();
+    const projectsRepository = new ProjectsRepository();
+
+    const updateClient = new UpdateClientService(
+      clientsRepository,
+      projectsRepository,
+    );
 
     const client = await updateClient.execute({
       projectId,
@@ -63,7 +72,9 @@ clientsRouter.patch(
   ensureAuthenticated,
   upload.single('avatar'),
   async (request, response) => {
-    const updateClientAvatar = new UpdateClientAvatarService();
+    const clientsRepository = new ClientsRepository();
+
+    const updateClientAvatar = new UpdateClientAvatarService(clientsRepository);
 
     const client = await updateClientAvatar.execute({
       clientId: request.client.id,

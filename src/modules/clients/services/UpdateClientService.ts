@@ -1,29 +1,25 @@
-import { getRepository } from 'typeorm';
-
 import Client from '@modules/clients/infra/typeorm/entities/Client';
-import Project from '@modules/projects/infra/typeorm/entities/Project';
 import AppError from '@shared/errors/AppError';
+import IProjectsRepository from '@modules/projects/repositories/IProjectsRepository';
+import IClientsRepository from '../repositories/IClientsRepository';
 
-interface Request {
+interface IRequest {
   projectId: string;
   email: string;
 }
 
 class UpdateClientService {
-  public async execute({ projectId, email }: Request): Promise<Client> {
-    const projectsRepository = getRepository(Project);
-    const clientsRepository = getRepository(Client);
+  constructor(
+    private clientsRepository: IClientsRepository,
+    private projectsRepository: IProjectsRepository,
+  ) {}
 
-    const project = await projectsRepository.findOne({
-      where: { id: projectId },
-    });
+  public async execute({ projectId, email }: IRequest): Promise<Client> {
+    const project = await this.projectsRepository.findById(projectId);
 
     if (!project) throw new AppError('Project not found');
 
-    const client = await clientsRepository.findOne({
-      where: { email },
-      relations: ['project'],
-    });
+    const client = await this.clientsRepository.findByClientEmail(email);
 
     if (!client) throw new AppError('E-mail not found');
 
@@ -36,7 +32,7 @@ class UpdateClientService {
 
     client.project = [...client.project, project];
 
-    await clientsRepository.save(client);
+    await this.clientsRepository.save(client);
 
     return client;
   }

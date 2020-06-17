@@ -1,21 +1,24 @@
-import { getRepository } from 'typeorm';
 import path from 'path';
 import fs from 'fs';
 
 import Client from '@modules/clients/infra/typeorm/entities/Client';
 import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
+import IClientsRepository from '../repositories/IClientsRepository';
 
-interface Request {
+interface IRequest {
   clientId: string;
   avatarFilename: string;
 }
 
 class UpdateClientAvatarService {
-  public async execute({ clientId, avatarFilename }: Request): Promise<Client> {
-    const clientsRepository = getRepository(Client);
+  constructor(private clientsRepository: IClientsRepository) {}
 
-    const client = await clientsRepository.findOne(clientId);
+  public async execute({
+    clientId,
+    avatarFilename,
+  }: IRequest): Promise<Client> {
+    const client = await this.clientsRepository.findByClientId(clientId);
 
     if (!client)
       throw new AppError(
@@ -39,7 +42,7 @@ class UpdateClientAvatarService {
 
     client.avatar = avatarFilename;
 
-    await clientsRepository.save(client);
+    await this.clientsRepository.save(client);
 
     return client;
   }

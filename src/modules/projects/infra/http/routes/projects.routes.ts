@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { getCustomRepository } from 'typeorm';
 
-import ProjectsRepository from '@modules/projects/repositories/ProjectsRepository';
+import ProjectsRepository from '@modules/projects/infra/typeorm/repositories/ProjectsRepository';
 import CreateProjectService from '@modules/projects/services/CreateProjectService';
 import ensureAuthenticated from '@modules/clients/infra/middlewares/ensureAuthenticated';
 
@@ -9,20 +8,20 @@ const projectsRouter = Router();
 
 projectsRouter.use(ensureAuthenticated);
 
-projectsRouter.get('/', async (request, response) => {
-  const projectsRepository = getCustomRepository(ProjectsRepository);
+// projectsRouter.get('/', async (request, response) => {
+//   const projects = await projectsRepository.find();
 
-  const projects = await projectsRepository.find();
-
-  return response.json(projects);
-});
+//   return response.json(projects);
+// });
 
 projectsRouter.post('/', async (request, response) => {
-  const { name, client } = request.body;
+  const { name } = request.body;
 
-  const createProject = new CreateProjectService();
+  const projectsRepository = new ProjectsRepository();
 
-  const project = await createProject.execute({ name, client });
+  const createProject = new CreateProjectService(projectsRepository);
+
+  const project = await createProject.execute({ name });
 
   return response.json(project);
 });
