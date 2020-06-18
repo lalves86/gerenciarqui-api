@@ -4,6 +4,7 @@ import { sign } from 'jsonwebtoken';
 import Client from '@modules/clients/infra/typeorm/entities/Client';
 import authConfig from '@config/auth';
 import AppError from '@shared/errors/AppError';
+import { injectable, inject } from 'tsyringe';
 import IClientsRepository from '../repositories/IClientsRepository';
 
 interface IRequest {
@@ -16,8 +17,12 @@ interface IResponse {
   token: string;
 }
 
+@injectable()
 class AuthenticateClientService {
-  constructor(private clientsRepository: IClientsRepository) {}
+  constructor(
+    @inject('ClientsRepository')
+    private clientsRepository: IClientsRepository,
+  ) {}
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     const client = await this.clientsRepository.findByClientEmail(email);

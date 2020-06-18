@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
+import { container } from 'tsyringe';
 
 import uploadConfig from '@config/upload';
 
@@ -8,8 +9,6 @@ import ensureAuthenticated from '@modules/clients/infra/middlewares/ensureAuthen
 import CreateClientService from '@modules/clients/services/CreateClientService';
 import UpdateClientService from '@modules/clients/services/UpdateClientService';
 import UpdateClientAvatarService from '@modules/clients/services/UpdateClientAvatarService';
-import ProjectsRepository from '@modules/projects/infra/typeorm/repositories/ProjectsRepository';
-import ClientsRepository from '../../typeorm/repositories/ClientsRepository';
 
 const clientsRouter = Router();
 const upload = multer(uploadConfig);
@@ -27,9 +26,7 @@ const upload = multer(uploadConfig);
 clientsRouter.post('/', async (request, response) => {
   const { name, email, phone, address, password, cpf } = request.body;
 
-  const clientsRepository = new ClientsRepository();
-
-  const createClient = new CreateClientService(clientsRepository);
+  const createClient = container.resolve(CreateClientService);
 
   const client = await createClient.execute({
     name,
@@ -50,13 +47,7 @@ clientsRouter.put(
     const { projectId } = request.params;
     const { email } = request.body;
 
-    const clientsRepository = new ClientsRepository();
-    const projectsRepository = new ProjectsRepository();
-
-    const updateClient = new UpdateClientService(
-      clientsRepository,
-      projectsRepository,
-    );
+    const updateClient = container.resolve(UpdateClientService);
 
     const client = await updateClient.execute({
       projectId,
@@ -72,9 +63,7 @@ clientsRouter.patch(
   ensureAuthenticated,
   upload.single('avatar'),
   async (request, response) => {
-    const clientsRepository = new ClientsRepository();
-
-    const updateClientAvatar = new UpdateClientAvatarService(clientsRepository);
+    const updateClientAvatar = container.resolve(UpdateClientAvatarService);
 
     const client = await updateClientAvatar.execute({
       clientId: request.client.id,

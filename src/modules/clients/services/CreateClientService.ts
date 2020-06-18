@@ -1,4 +1,5 @@
 import { hash } from 'bcryptjs';
+import { inject, injectable } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 import Client from '@modules/clients/infra/typeorm/entities/Client';
@@ -13,8 +14,12 @@ interface IRequest {
   cpf: string;
 }
 
+@injectable()
 class CreateClientService {
-  constructor(private clientsRepository: IClientsRepository) {}
+  constructor(
+    @inject('ClientsRepository')
+    private clientsRepository: IClientsRepository,
+  ) {}
 
   public async execute({
     name,

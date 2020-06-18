@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { injectable, inject } from 'tsyringe';
 
 import Client from '@modules/clients/infra/typeorm/entities/Client';
 import uploadConfig from '@config/upload';
@@ -11,8 +12,12 @@ interface IRequest {
   avatarFilename: string;
 }
 
+@injectable()
 class UpdateClientAvatarService {
-  constructor(private clientsRepository: IClientsRepository) {}
+  constructor(
+    @inject('ClientsRepository')
+    private clientsRepository: IClientsRepository,
+  ) {}
 
   public async execute({
     clientId,

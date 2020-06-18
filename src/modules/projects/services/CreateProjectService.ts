@@ -1,3 +1,5 @@
+import { injectable, inject } from 'tsyringe';
+
 import Project from '@modules/projects/infra/typeorm/entities/Project';
 import AppError from '@shared/errors/AppError';
 import IProjectsRepository from '../repositories/IProjectsRepository';
@@ -6,8 +8,12 @@ interface IRequest {
   name: string;
 }
 
+@injectable()
 class CreateProjectService {
-  constructor(private projectsRepository: IProjectsRepository) {}
+  constructor(
+    @inject('ProjectsRepository')
+    private projectsRepository: IProjectsRepository,
+  ) {}
 
   public async execute({ name }: IRequest): Promise<Project> {
     const projectExists = await this.projectsRepository.findByName(name);

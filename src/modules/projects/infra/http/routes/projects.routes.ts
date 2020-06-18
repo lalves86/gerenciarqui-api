@@ -1,6 +1,6 @@
 import { Router } from 'express';
+import { container } from 'tsyringe';
 
-import ProjectsRepository from '@modules/projects/infra/typeorm/repositories/ProjectsRepository';
 import CreateProjectService from '@modules/projects/services/CreateProjectService';
 import ensureAuthenticated from '@modules/clients/infra/middlewares/ensureAuthenticated';
 
@@ -17,9 +17,7 @@ projectsRouter.use(ensureAuthenticated);
 projectsRouter.post('/', async (request, response) => {
   const { name } = request.body;
 
-  const projectsRepository = new ProjectsRepository();
-
-  const createProject = new CreateProjectService(projectsRepository);
+  const createProject = container.resolve(CreateProjectService);
 
   const project = await createProject.execute({ name });
 

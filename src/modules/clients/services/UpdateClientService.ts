@@ -1,3 +1,5 @@
+import { injectable, inject } from 'tsyringe';
+
 import Client from '@modules/clients/infra/typeorm/entities/Client';
 import AppError from '@shared/errors/AppError';
 import IProjectsRepository from '@modules/projects/repositories/IProjectsRepository';
@@ -8,9 +10,13 @@ interface IRequest {
   email: string;
 }
 
+@injectable()
 class UpdateClientService {
   constructor(
+    @inject('ClientsRepository')
     private clientsRepository: IClientsRepository,
+
+    @inject('ProjectsRepository')
     private projectsRepository: IProjectsRepository,
   ) {}
 
@@ -23,7 +29,7 @@ class UpdateClientService {
 
     if (!client) throw new AppError('E-mail not found');
 
-    const checkClientProjects = client.project.find(
+    const checkClientProjects = client.project?.find(
       (projectItem) => projectItem.id === projectId,
     );
 
