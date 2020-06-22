@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { container } from 'tsyringe';
 
-import CreateProjectService from '@modules/projects/services/CreateProjectService';
 import ensureAuthenticated from '@modules/clients/infra/middlewares/ensureAuthenticated';
+import ProjectsController from '../controllers/ProjectsController';
 
 const projectsRouter = Router();
+const projectsController = new ProjectsController();
 
 projectsRouter.use(ensureAuthenticated);
 
@@ -14,14 +14,6 @@ projectsRouter.use(ensureAuthenticated);
 //   return response.json(projects);
 // });
 
-projectsRouter.post('/', async (request, response) => {
-  const { name } = request.body;
-
-  const createProject = container.resolve(CreateProjectService);
-
-  const project = await createProject.execute({ name });
-
-  return response.json(project);
-});
+projectsRouter.post('/', projectsController.create);
 
 export default projectsRouter;

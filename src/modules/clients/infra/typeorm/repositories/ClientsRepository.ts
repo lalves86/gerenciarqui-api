@@ -18,6 +18,7 @@ class ClientsRepository implements IClientsRepository {
 
   public async findByClientEmail(email: string): Promise<Client | undefined> {
     const client = await this.ormRepository.findOne({
+      relations: ['project'],
       where: { email },
     });
 

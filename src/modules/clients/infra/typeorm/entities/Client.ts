@@ -37,7 +37,7 @@ class Client {
   @Column()
   avatar: string;
 
-  @ManyToMany(() => Project)
+  @ManyToMany((type) => Project, (project) => project.client)
   @JoinTable()
   project: Project[];
 

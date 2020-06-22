@@ -1,17 +1,17 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { container } from 'tsyringe';
 
 import uploadConfig from '@config/upload';
 
 import ensureAuthenticated from '@modules/clients/infra/middlewares/ensureAuthenticated';
 
-import CreateClientService from '@modules/clients/services/CreateClientService';
-import UpdateClientService from '@modules/clients/services/UpdateClientService';
-import UpdateClientAvatarService from '@modules/clients/services/UpdateClientAvatarService';
+import ClientsController from '../controllers/ClientsController';
+import ClientAvatarController from '../controllers/ClientAvatarController';
 
 const clientsRouter = Router();
 const upload = multer(uploadConfig);
+const clientsController = new ClientsController();
+const clientAvatarController = new ClientAvatarController();
 
 // clientsRouter.get('/', ensureAuthenticated, async (request, response) => {
 //   const clientsRepository = getRepository(Client);
@@ -23,55 +23,15 @@ const upload = multer(uploadConfig);
 //   return response.json(clients);
 // });
 
-clientsRouter.post('/', async (request, response) => {
-  const { name, email, phone, address, password, cpf } = request.body;
+clientsRouter.post('/', clientsController.create);
 
-  const createClient = container.resolve(CreateClientService);
-
-  const client = await createClient.execute({
-    name,
-    email,
-    phone,
-    address,
-    password,
-    cpf,
-  });
-
-  return response.json(client);
-});
-
-clientsRouter.put(
-  '/:projectId',
-  ensureAuthenticated,
-  async (request, response) => {
-    const { projectId } = request.params;
-    const { email } = request.body;
-
-    const updateClient = container.resolve(UpdateClientService);
-
-    const client = await updateClient.execute({
-      projectId,
-      email,
-    });
-
-    return response.json(client);
-  },
-);
+clientsRouter.put('/:projectId', ensureAuthenticated, clientsController.update);
 
 clientsRouter.patch(
   '/avatar',
   ensureAuthenticated,
   upload.single('avatar'),
-  async (request, response) => {
-    const updateClientAvatar = container.resolve(UpdateClientAvatarService);
-
-    const client = await updateClientAvatar.execute({
-      clientId: request.client.id,
-      avatarFilename: request.file.filename,
-    });
-
-    return response.json(client);
-  },
+  clientAvatarController.update,
 );
 
 export default clientsRouter;

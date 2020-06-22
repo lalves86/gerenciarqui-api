@@ -29,7 +29,7 @@ class UpdateClientService {
 
     if (!client) throw new AppError('E-mail not found');
 
-    const checkClientProjects = client.project?.find(
+    const checkClientProjects = client.project.find(
       (projectItem) => projectItem.id === projectId,
     );
 

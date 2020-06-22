@@ -5,7 +5,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
 } from 'typeorm';
+import Client from '@modules/clients/infra/typeorm/entities/Client';
 
 @Entity('projects')
 class Project {
@@ -14,6 +16,9 @@ class Project {
 
   @Column()
   name: string;
+
+  @ManyToMany((type) => Client, (client) => client.project)
+  client: Client[];
 
   @CreateDateColumn()
   created_at: Date;
