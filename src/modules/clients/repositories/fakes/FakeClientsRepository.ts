@@ -1,28 +1,25 @@
-import { getRepository, Repository } from 'typeorm';
 import Client from '@modules/clients/infra/typeorm/entities/Client';
 import IClientsRepository from '@modules/clients/repositories/IClientsRepository';
 import ICreateClientDTO from '@modules/clients/dtos/ICreateClientDTO';
+import { uuid } from 'uuidv4';
 
 class ClientsRepository implements IClientsRepository {
-  private ormRepository: Repository<Client>;
-
-  constructor() {
-    this.ormRepository = getRepository(Client);
-  }
+  private clients: Client[] = [];
 
   public async findByClientId(clientId: string): Promise<Client | undefined> {
-    const client = await this.ormRepository.findOne(clientId);
+    const findClient = await this.clients.find(
+      (client) => client.id === clientId,
+    );
 
-    return client;
+    return findClient;
   }
 
   public async findByClientEmail(email: string): Promise<Client | undefined> {
-    const client = await this.ormRepository.findOne({
-      relations: ['project'],
-      where: { email },
-    });
+    const findClient = await this.clients.find(
+      (client) => client.email === email,
+    );
 
-    return client;
+    return findClient;
   }
 
   public async create({
@@ -33,7 +30,10 @@ class ClientsRepository implements IClientsRepository {
     cpf,
     password,
   }: ICreateClientDTO): Promise<Client> {
-    const client = this.ormRepository.create({
+    const client = new Client();
+
+    Object.assign(client, {
+      id: uuid(),
       name,
       email,
       phone,
@@ -42,13 +42,19 @@ class ClientsRepository implements IClientsRepository {
       password,
     });
 
-    await this.ormRepository.save(client);
+    this.clients.push(client);
 
     return client;
   }
 
   public async save(client: Client): Promise<Client> {
-    return this.ormRepository.save(client);
+    const findIndex = this.clients.findIndex(
+      (findClient) => findClient.id === client.id,
+    );
+
+    this.clients[findIndex] = client;
+
+    return client;
   }
 }
 
