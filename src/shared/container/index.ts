@@ -1,5 +1,6 @@
 import { container } from 'tsyringe';
 import '@modules/clients/providers';
+import './providers';
 import ProjectsRepository from '@modules/projects/infra/typeorm/repositories/ProjectsRepository';
 import IProjectsRepository from '@modules/projects/repositories/IProjectsRepository';
 import ClientsRepository from '@modules/clients/infra/typeorm/repositories/ClientsRepository';
