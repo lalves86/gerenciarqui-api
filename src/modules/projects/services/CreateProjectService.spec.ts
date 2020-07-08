@@ -23,7 +23,7 @@ describe('CreateProject', () => {
       name: 'Test project',
     });
 
-    expect(
+    await expect(
       createProject.execute({
         name: 'Test project',
       }),

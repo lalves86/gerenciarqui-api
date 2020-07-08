@@ -4,7 +4,7 @@ import IClientsRepository from '@modules/clients/repositories/IClientsRepository
 import ICreateClientDTO from '@modules/clients/dtos/ICreateClientDTO';
 import { uuid } from 'uuidv4';
 
-class ClientsRepository implements IClientsRepository {
+class FakeClientsRepository implements IClientsRepository {
   private clients: Client[] = [];
 
   private projects: Project[] = [];
@@ -62,4 +62,4 @@ class ClientsRepository implements IClientsRepository {
   }
 }
 
-export default ClientsRepository;
+export default FakeClientsRepository;
