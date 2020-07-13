@@ -11,10 +11,20 @@ class FakeClientTokensRepository implements IClientTokensRepository {
     Object.assign(clientToken, {
       id: uuid(),
       token: uuid(),
-      clientId,
+      client_id: clientId,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
 
     this.clientTokens.push(clientToken);
+
+    return clientToken;
+  }
+
+  public async findByToken(token: string): Promise<ClientToken | undefined> {
+    const clientToken = this.clientTokens.find(
+      (findToken) => findToken.token === token,
+    );
 
     return clientToken;
   }
