@@ -2,11 +2,16 @@ import AppError from '@shared/errors/AppError';
 import FakeProjectsRepository from '../repositories/fakes/FakeProjectsRepository';
 import CreateProjectService from './CreateProjectService';
 
-describe('CreateProject', () => {
-  it('should be able to create a new project', async () => {
-    const fakeProjectRepository = new FakeProjectsRepository();
-    const createProject = new CreateProjectService(fakeProjectRepository);
+let createProject: CreateProjectService;
+let fakeProjectRepository: FakeProjectsRepository;
 
+describe('CreateProject', () => {
+  beforeEach(() => {
+    fakeProjectRepository = new FakeProjectsRepository();
+    createProject = new CreateProjectService(fakeProjectRepository);
+  });
+
+  it('should be able to create a new project', async () => {
     const project = await createProject.execute({
       name: 'Test project',
     });
@@ -16,9 +21,6 @@ describe('CreateProject', () => {
   });
 
   it('should not be able to create two projects with the same name', async () => {
-    const fakeProjectRepository = new FakeProjectsRepository();
-    const createProject = new CreateProjectService(fakeProjectRepository);
-
     await createProject.execute({
       name: 'Test project',
     });

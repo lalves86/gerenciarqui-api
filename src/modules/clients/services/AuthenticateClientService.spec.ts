@@ -4,20 +4,27 @@ import AuthenticateClientService from './AuthenticateClientService';
 import CreateClientService from './CreateClientService';
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 
+let fakeClientsRepository: FakeClientsRepository;
+let fakeHashProvider: FakeHashProvider;
+let authenticateClient: AuthenticateClientService;
+let createClient: CreateClientService;
+
 describe('AuthenticateClient', () => {
+  beforeEach(() => {
+    fakeClientsRepository = new FakeClientsRepository();
+    fakeHashProvider = new FakeHashProvider();
+    authenticateClient = new AuthenticateClientService(
+      fakeClientsRepository,
+      fakeHashProvider,
+    );
+
+    createClient = new CreateClientService(
+      fakeClientsRepository,
+      fakeHashProvider,
+    );
+  });
+
   it('should be able to authenticate a client', async () => {
-    const fakeClientsRepository = new FakeClientsRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const authenticateClient = new AuthenticateClientService(
-      fakeClientsRepository,
-      fakeHashProvider,
-    );
-
-    const createClient = new CreateClientService(
-      fakeClientsRepository,
-      fakeHashProvider,
-    );
-
     const client = await createClient.execute({
       name: 'Fulano de tal',
       email: 'fulano@test.com',
@@ -37,13 +44,6 @@ describe('AuthenticateClient', () => {
   });
 
   it('should not be able to authenticate with non existing client', async () => {
-    const fakeClientsRepository = new FakeClientsRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const authenticateClient = new AuthenticateClientService(
-      fakeClientsRepository,
-      fakeHashProvider,
-    );
-
     await expect(
       authenticateClient.execute({
         email: 'fulano@test.com',
@@ -53,18 +53,6 @@ describe('AuthenticateClient', () => {
   });
 
   it('should not be able to authenticate with wrong password', async () => {
-    const fakeClientsRepository = new FakeClientsRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const authenticateClient = new AuthenticateClientService(
-      fakeClientsRepository,
-      fakeHashProvider,
-    );
-
-    const createClient = new CreateClientService(
-      fakeClientsRepository,
-      fakeHashProvider,
-    );
-
     await createClient.execute({
       name: 'Fulano de tal',
       email: 'fulano@test.com',

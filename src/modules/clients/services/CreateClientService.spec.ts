@@ -3,15 +3,21 @@ import FakeClientsRepository from '../repositories/fakes/FakeClientsRepository';
 import CreateClientService from './CreateClientService';
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 
+let fakeClientsRepository: FakeClientsRepository;
+let fakeHashProvider: FakeHashProvider;
+let createClient: CreateClientService;
+
 describe('CreateClient', () => {
-  it('should be able to create a new client', async () => {
-    const fakeClientsRepository = new FakeClientsRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createClient = new CreateClientService(
+  beforeEach(() => {
+    fakeClientsRepository = new FakeClientsRepository();
+    fakeHashProvider = new FakeHashProvider();
+    createClient = new CreateClientService(
       fakeClientsRepository,
       fakeHashProvider,
     );
+  });
 
+  it('should be able to create a new client', async () => {
     const client = await createClient.execute({
       name: 'Fulano de tal',
       email: 'fulano@test.com',
@@ -25,13 +31,6 @@ describe('CreateClient', () => {
   });
 
   it('should not be able to create two clients with the same e-mail', async () => {
-    const fakeClientsRepository = new FakeClientsRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createClient = new CreateClientService(
-      fakeClientsRepository,
-      fakeHashProvider,
-    );
-
     await createClient.execute({
       name: 'Fulano de tal',
       email: 'fulano@test.com',

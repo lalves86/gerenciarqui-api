@@ -3,15 +3,21 @@ import FakeStorageProvider from '@shared/container/providers/StorageProvider/fak
 import FakeClientsRepository from '../repositories/fakes/FakeClientsRepository';
 import UpdateClientAvatarService from './UpdateClientAvatarService';
 
+let fakeClientsRepository: FakeClientsRepository;
+let fakeStorageProvider: FakeStorageProvider;
+let updateClientAvatar: UpdateClientAvatarService;
+
 describe('UpdateClientAvatar', () => {
-  it('should be able to update the client avatar', async () => {
-    const fakeClientsRepository = new FakeClientsRepository();
-    const fakeStorageProvider = new FakeStorageProvider();
-    const updateClientAvatar = new UpdateClientAvatarService(
+  beforeEach(() => {
+    fakeClientsRepository = new FakeClientsRepository();
+    fakeStorageProvider = new FakeStorageProvider();
+    updateClientAvatar = new UpdateClientAvatarService(
       fakeClientsRepository,
       fakeStorageProvider,
     );
+  });
 
+  it('should be able to update the client avatar', async () => {
     const client = await fakeClientsRepository.create({
       name: 'Fulano de tal',
       email: 'fulano@test.com',
@@ -30,13 +36,6 @@ describe('UpdateClientAvatar', () => {
   });
 
   it('should not be able to update from non existing client', async () => {
-    const fakeClientsRepository = new FakeClientsRepository();
-    const fakeStorageProvider = new FakeStorageProvider();
-    const updateClientAvatar = new UpdateClientAvatarService(
-      fakeClientsRepository,
-      fakeStorageProvider,
-    );
-
     expect(
       updateClientAvatar.execute({
         clientId: 'non-existing-client',
@@ -46,13 +45,6 @@ describe('UpdateClientAvatar', () => {
   });
 
   it('should delete old avatar when updating a new one', async () => {
-    const fakeClientsRepository = new FakeClientsRepository();
-    const fakeStorageProvider = new FakeStorageProvider();
-    const updateClientAvatar = new UpdateClientAvatarService(
-      fakeClientsRepository,
-      fakeStorageProvider,
-    );
-
     const deleteFile = jest.spyOn(fakeStorageProvider, 'deleteFile');
 
     const client = await fakeClientsRepository.create({
