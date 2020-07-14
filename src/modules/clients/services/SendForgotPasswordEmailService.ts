@@ -1,4 +1,5 @@
 import { inject, injectable } from 'tsyringe';
+import path from 'path';
 
 import AppError from '@shared/errors/AppError';
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
@@ -25,6 +26,13 @@ class SendForgotPasswordEmailService {
 
     const { token } = await this.clientTokensRepository.generate(client.id);
 
+    const forgotPasswordTemplate = path.resolve(
+      __dirname,
+      '..',
+      'views',
+      'forgot_password.hbs',
+    );
+
     await this.mailProvider.sendMail({
       to: {
         name: client.name,
@@ -32,10 +40,10 @@ class SendForgotPasswordEmailService {
       },
       subject: 'Recuperação da sua senha do GerenciArqui',
       templateData: {
-        template: 'Olá, {{name}}: {{token}}',
+        file: forgotPasswordTemplate,
         variables: {
           name: client.name,
-          token,
+          link: `http://localhost:3000/reset-password?token=${token}`,
         },
       },
     });
