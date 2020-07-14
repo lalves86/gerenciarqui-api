@@ -25,10 +25,20 @@ class SendForgotPasswordEmailService {
 
     const { token } = await this.clientTokensRepository.generate(client.id);
 
-    await this.mailProvider.sendMail(
-      email,
-      `Pedido de recuperação de senha recebido ${token}`,
-    );
+    await this.mailProvider.sendMail({
+      to: {
+        name: client.name,
+        email: client.email,
+      },
+      subject: 'Recuperação da sua senha do GerenciArqui',
+      templateData: {
+        template: 'Olá, {{name}}: {{token}}',
+        variables: {
+          name: client.name,
+          token,
+        },
+      },
+    });
   }
 }
 
