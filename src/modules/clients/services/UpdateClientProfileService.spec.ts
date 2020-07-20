@@ -143,4 +143,17 @@ describe('UpdateProfile', () => {
       }),
     ).rejects.toBeInstanceOf(AppError);
   });
+
+  it('should not be able to update profile of a non-existing client', async () => {
+    expect(
+      updateProfile.execute({
+        clientId: 'non-existing-client-id',
+        name: 'Fulano de tal',
+        email: 'fulano@example.com',
+        address: 'Test St.',
+        phone: '99 99999-9999',
+        cpf: '123.456.789-00',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
+  });
 });
